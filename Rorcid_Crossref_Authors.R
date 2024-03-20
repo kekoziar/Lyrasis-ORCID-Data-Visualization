@@ -66,11 +66,11 @@ rm(list = ls())
 # 7. A gray box will appear including your Client ID and Client Secret. In the below code chunk, copy and paste the client ID and the client secret respectively. 
 # 8. Make sure to leave the quotation marks (e.g. orcid_client_id <- "APP-FDFJKDSLF320SDFF" and orcid_client_secret <- "c8e987sa-0b9c-82ed-91as-1112b24234e"). 
 
-# copy/paste your client ID from https://orcid.org/developer-tools
-orcid_client_id <- "PASTE MY CLIENT ID HERE"
+# moved secret to secret # copy/paste your client ID from https://orcid.org/developer-tools
+# orcid_client_id <- "PASTE MY CLIENT ID HERE"
 
 # copy/paste your client secret from https://orcid.org/developer-tools
-orcid_client_secret <- "PASTE MY CLIENT SECRET HERE"
+# orcid_client_secret <- "PASTE MY CLIENT SECRET HERE"
 
 # This gets a /read-public scope access token
 orcid_request <- POST(url  = "https://orcid.org/oauth/token",
@@ -117,31 +117,31 @@ rorcid::orcid_auth()
 
 # set the working directory where this script is
 # a folder called "data" is also expected to be in this directory
-setwd("PASTE YOUR WORKING DIRECTORY HERE")
+# setwd("PASTE YOUR WORKING DIRECTORY HERE")
 
 # set the time period of interest: this script will compile collaboration data since Jan 1 of this year.
 # replace the YYYY with a 4 digit year.
 # the more years of data desired, the longer some portions of this script will take to run
-my_year = YYYY;
+my_year = 2023;
 
 # set the home institution identifiers
-ringgold_id <- "enter your institution's ringgold" 
-grid_id <- "enter your institution's grid ID" 
-ror_id <- "enter your institution's ROR ID"
+ringgold_id <- "8790" 
+grid_id <- "grid.266097.c" 
+ror_id <- "03nawhv43"
 # leave the @ off the email domain, if you want to catch subdomains (e.g. @tuj.temple.edu)
-email_domain <- "enter your institution's email domain" 
-organization_name <- "enter your organization's name"
+email_domain <- "ucr.edu" 
+organization_name <- "University of California, Riverside"
 
 # Set a short name key word here that you will use to filter for ORCID records from the home institution later
 # Keep it short, like the state name (e.g. Oklahoma).
 # If you are adding more than one keyword, separate them by a pipe (|)
-my_org_keyword = "enter your institution's keyword"
+my_org_keyword = "UCR|Riverside"
 
 # set the institution's main location information (for use when precise location info is blank)
-anchor_org<-"enter your institution's name"
-anchor_city<-"enter your institution's city"
-anchor_region<-"enter your institution's state"
-anchor_country<-"enter your institution's country"
+anchor_org<-"University of California, Riverside"
+anchor_city<-"Riverside"
+anchor_region<-"CA" # they used two letter abbreviation
+anchor_country<-"US" # they used US
 
 # create the query
 # decide between these two choices:
@@ -216,7 +216,7 @@ my_employment <- rorcid::orcid_employments(my_orcids_data$orcid_identifier_path)
 #write(to_write,"./data/employment.json")
 
 # read it back in, if necessary
-#my_employment <- read_json("./data/processed/employment.json", simplifyVector = TRUE)
+#my_employment <- read_json("./data/employment.json", simplifyVector = TRUE)
 ##### WRITE/READ JSON
 
 # extract the employment data and mutate the dates
@@ -249,6 +249,17 @@ my_organizations_filtered <- my_organizations %>%
 # view the variation in organization names by looking at my_organization_filtered (will open a new tab)
 view(my_organizations_filtered)
 
+##### WRITE/READ CSV uncomment to save this data and read it back in later
+#write_csv(my_organizations_filtered, "./data/my_organizations_filtered.csv")
+
+########################
+# if using #2 below, 
+# 1. save my_organizations_filtered.csv as my_organizations_edited.csv
+# 2. delete unwanted organizations. remove whole lines
+# 3. run the code in org-list.r
+# 4. copy the cat output in the console and paste below in #2)
+########################
+
 # filter the dataset to include only the institutions you want 
 # decide between these two choices:
 # 1. to accept any organization listed in my_organization filtered, run this:
@@ -259,12 +270,42 @@ my_employment_data_filtered <- my_employment_data %>%
 # following this example. As you can see there may be messiness in hand-entered organization names.
 # replace these example names with the ones you are interested in from your my_organizations_filtered list
 my_employment_data_filtered <- my_employment_data %>%
-  dplyr::filter(organization_name == "Temple University"
-                | organization_name == "Temple University "
-                | organization_name == "Temple University Fox School of Business and Management"
-                | organization_name == "Temple University, Japan"
-                | organization_name == "Temple University Japan"
-                | organization_name == "Temple University - Ambler Campus")
+  dplyr::filter(organization_name =="University of California Riverside"
+                | organization_name =="University of California, Riverside"
+                | organization_name =="University of California Riverside School of Medicine"
+                | organization_name =="University of California Riverside"
+                | organization_name =="University of California - Riverside"
+                | organization_name =="UC Riverside"
+                | organization_name =="University of California Riverside A Gary Anderson Graduate School of Management"
+                | organization_name =="University of California Riverside Department of Environmental Sciences"
+                | organization_name =="University of California-Riverside"
+                | organization_name =="University of California Riverside Department of Psychology"
+                | organization_name =="University of California Riverside School of Public Policy"
+                | organization_name =="University of California at Riverside"
+                | organization_name =="Graduate Quantitative Center, UC Riverside"
+                | organization_name =="The Regents of he University of California, Riverside (UCR"
+                | organization_name =="The Scripps Research Institute & University of California Riverside"
+                | organization_name =="The University of California, Riverside"
+                | organization_name =="UCR Graduate Student Association"
+                | organization_name =="USDA-ARS Salinity Laboratory/UCR"
+                | organization_name =="USDA-ARS, University of California, Riverside"
+                | organization_name =="Uniiversity of California Riverside"
+                | organization_name =="Univeristy of California Riverside"
+                | organization_name =="University of California Riverside (UCR)"
+                | organization_name =="University of California Riverside / and Assiut university, Egypt"
+                | organization_name =="University of California Riverside CA US"
+                | organization_name =="University of California Riverside College of Natural and Agricultural Sciences"
+                | organization_name =="University of California Riverside Department of Biology"
+                | organization_name =="University of California Riverside Department of Chemistry"
+                | organization_name =="University of California Riverside Department of Microbiology and Plant Pathology"
+                | organization_name =="University of California Riverside Institute for Integrative Genome Biology"
+                | organization_name =="University of California Riverside International Education Center"
+                | organization_name =="University of California Riverside School of Business"
+                | organization_name =="University of California,  Riverside"
+                | organization_name =="University of California, Riverside"
+                | organization_name =="University of California, Riverside Extension"
+                | organization_name =="University of California- Riverside"
+                | organization_name =="Unversity of California, Riverside")
 
 # finally, filter to include only people who have NA as the end date
 my_employment_data_filtered_current <- my_employment_data_filtered %>%
@@ -457,9 +498,9 @@ dois_since_year <- dois_unduped %>%
 
 
 ##### WRITE/READ JSON uncomment to work with this data outside of R or read it back in later
-#write_file_path = paste0("./data/metadata_",my_year,".json")
-#to_write<-toJSON(metadata_since_year, pretty=TRUE, na="null")
-#write(to_write,write_file_path)
+write_file_path = paste0("./data/metadata_",my_year,".json")
+to_write<-toJSON(metadata_since_year, pretty=TRUE, na="null")
+write(to_write,write_file_path)
 
 # read it back in, if necessary
 #metadata_since_year <- read_json(write_file_path, simplifyVector = TRUE)
